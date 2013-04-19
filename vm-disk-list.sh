@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#    display all vm-disk information in the specified Xenserver Resource Pool  
+#  
 
 IFS=,
 for vm in $(xe vm-list --minimal)
