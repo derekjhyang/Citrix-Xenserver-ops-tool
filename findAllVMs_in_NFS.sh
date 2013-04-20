@@ -29,16 +29,15 @@ do
 done
 read -p "Which SR you want to search:" SR
 
-
-
 for (( i=0; i<${#SRNameArr[@]}; i++ ))
 do
     if [[ ${SRNameArr[$i]} == $SR ]];then
         sr_uuid=${SRUUIDArr[$i]}
         vdi_list=$(xe vdi-list sr-uuid=${sr_uuid} --minimal)
-        echo "                 VM-UUID                   VM-NAME         VDI"
+        echo "                 VM-UUID                   VM-NAME               VDI-NAME                  VDI-UUID"
         for vdi in ${vdi_list}
         do
+            vdi_name=$(xe vdi-list uuid=${vdi} params=name-label --minimal)
             vm_uuid=$(xe vbd-list vdi-uuid=${vdi} params=vm-uuid --minimal)
             vm_name=$(xe vbd-list vdi-uuid=${vdi} params=vm-name-label --minimal)
             if [ -z ${vm_uuid} ];then
@@ -47,8 +46,9 @@ do
             if [ -z ${vm_name} ];then
                 vm_name="    null          "
             fi
-            echo -e "${vm_uuid}\t${vm_name}\t${vdi}"
+            echo -e "${vm_uuid}\t${vm_name}\t${vdi_name}\t${vdi}"
         done
         break
     fi
 done
+IFS=
